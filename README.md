@@ -66,7 +66,7 @@ command prompt in its directory and running python setup.py install.
   * The Default User / Password can be set in auth.config
   
 ## Webinterface Styling
-  * css/style.css can be modified to change the style of the Web Interface.
+  * web/css/style.css can be modified to change the style of the Web Interface.
  
 
 
