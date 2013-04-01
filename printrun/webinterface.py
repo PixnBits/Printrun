@@ -23,7 +23,7 @@ from printrun.printrun_utils import configfile, imagefile, sharedfile
 users = {}
 
 def PrintHeader():
-    return '<html>\n<head>\n<title>Pronterface-Web</title>\n<link rel = "stylesheet" type = "text/css" href = "/css/style.css" type = "text/css"></link>\n<script src="/js/asyncCommand.js"></script>\n</head>\n<body>\n'
+    return '<html>\n<head>\n<title>Pronterface-Web</title>\n<link rel = "stylesheet" type = "text/css" href = "/css/style.css" type = "text/css"></link>\n<script src="/js/pronter.js"></script>\n</head>\n<body>\n'
 
 def PrintMenu():
     return '<div id = "mainmenu"><ul><li><a href = "/">home</a></li><li><a href = "/settings">settings</a></li><li><a href = "/console">console</a></li><li><a href = "/status">status (XML)</a></li></ul></div>'
@@ -248,6 +248,10 @@ class XMLstatus(object):
         return txt
     index.exposed = True
 
+#class API(object):
+#    def index(self):
+#        # allow commands via json (designed for AJAX calls)
+
 class WebInterface(object):
 
     def __init__(self, pface):
@@ -352,7 +356,8 @@ class WebInterface(object):
        # pageText+="</div>"
        # pageText+="</div>"
 
-        pageText = pageText+"<div id='file'>File Loaded: <i>"+str(gPronterPtr.filename)+"</i></div>"
+        pageText+="<div id='file'>File Loaded: <i>"+str(gPronterPtr.filename)+"</i></div>"
+        pageText+="<div id='command'><label for='command_input'>Issue Command:</label><input type='text' id='command_input'></input><input type='button' onclick='alert(\"not implemented yet :(\");' value='Send Command'></div>"
         pageText+="<div id='logframe'><iframe src='/logpage' width='100%' height='100%'>iFraming Not Supported?? No log for you.</iframe></div>"
         pageText+=PrintFooter()
         return pageText
@@ -374,14 +379,16 @@ def KillWebInterfaceThread():
     cherrypy.engine.exit()
 
 def StartWebInterfaceThread(webInterface):
-    current_dir = os.path.dirname(os.path.abspath(__file__))    
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    # so we can find the abs paths below even when executed in dir (not abs)
+    working_dir = os.path.dirname(current_dir)
     cherrypy.config.update({'engine.autoreload_on':False})
     cherrypy.config.update(configfile(webInterface.pface.web_config or "http.config"))
     conf = {'/css/style.css': {'tools.staticfile.on': True,
-                      'tools.staticfile.filename': sharedfile('web/style.css'),
+                      'tools.staticfile.filename': sharedfile('web/css/style.css', [working_dir]),
                      },
-             '/js/asyncCommand.js': {'tools.staticfile.on': True,
-                      'tools.staticfile.filename': sharedfile('web/js/asyncCommand.js'),
+             '/js/pronter.js': {'tools.staticfile.on': True,
+                      'tools.staticfile.filename': sharedfile('web/js/pronter.js', [working_dir]),
                      },
              '/images/control_xy.png': {'tools.staticfile.on': True,
                       'tools.staticfile.filename': imagefile('control_xy.png'),

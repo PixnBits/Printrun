@@ -51,8 +51,8 @@ def lookup_file(filename, prefixes):
 def pixmapfile(filename):
     return lookup_file(filename, ['/usr/local/share/pixmaps', '/usr/share/pixmaps'])
 
-def sharedfile(filename):
-    return lookup_file(filename, ['/usr/local/share/pronterface', '/usr/share/pronterface'])
+def sharedfile(filename, otherDirs = []):
+    return lookup_file(filename, ['/usr/local/share/pronterface', '/usr/share/pronterface']+otherDirs)
 
 def configfile(filename):
     return lookup_file(filename, [os.path.expanduser("~/.printrun/"),])
